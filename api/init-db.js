@@ -1,7 +1,10 @@
 import { Pool } from 'pg';
 
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL, // Используется переменная окружения для подключения
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false, // Для работы с Vercel Postgres
+  },
 });
 
 export default async function handler(req, res) {
@@ -13,41 +16,22 @@ export default async function handler(req, res) {
   try {
     const client = await pool.connect();
 
-    // Создаем таблицы для базы данных
-    await client.query(`
-      CREATE TABLE IF NOT EXISTS novels (
-        id SERIAL PRIMARY KEY,
-        title VARCHAR(255) NOT NULL,
-        description TEXT,
-        cover_url VARCHAR(255),
-        rating NUMERIC DEFAULT 0,
-        tags VARCHAR(255)[] DEFAULT '{}'
-      );
+    // Пример проверки доступности таблицы
+    const result = await client.query(`
+      SELECT table_name 
+      FROM information_schema.tables 
+      WHERE table_schema = 'public';
     `);
 
-    await client.query(`
-      CREATE TABLE IF NOT EXISTS chapters (
-        id SERIAL PRIMARY KEY,
-        novel_id INTEGER REFERENCES novels(id) ON DELETE CASCADE,
-        title VARCHAR(255),
-        content TEXT,
-        chapter_number INTEGER,
-        UNIQUE (novel_id, chapter_number)
-      );
-    `);
+    if (result.rows.length === 0) {
+      res.status(200).json({ message: 'No tables found. Database is empty.' });
+    } else {
+      res.status(200).json({ message: 'Database is ready.', tables: result.rows });
+    }
 
-    await client.query(`
-      CREATE TABLE IF NOT EXISTS users (
-        id SERIAL PRIMARY KEY,
-        telegram_id BIGINT UNIQUE NOT NULL,
-        username VARCHAR(255),
-        last_read_chapter_id INTEGER REFERENCES chapters(id) ON DELETE SET NULL
-      );
-    `);
-
-    res.status(200).json({ message: 'Database initialized successfully' });
+    client.release();
   } catch (error) {
-    console.error('Error initializing database:', error);
-    res.status(500).json({ error: 'Failed to initialize database' });
+    console.error('Error connecting to database:', error);
+    res.status(500).json({ error: 'Failed to connect to database.' });
   }
 }
