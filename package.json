@@ -15,12 +15,10 @@
   "dependencies": {
     "next": "13.x",
     "react": "18.x",
-    "react-dom": "18.x",
-    "telegram-web-app": "^1.0.0"
+    "react-dom": "18.x"
   },
   "devDependencies": {
     "eslint": "8.x",
     "eslint-config-next": "13.x"
   }
 }
-
