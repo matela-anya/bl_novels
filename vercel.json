@@ -2,17 +2,13 @@
   "version": 2,
   "builds": [
     {
-      "src": "api/*.js",
-      "use": "@vercel/node"
-    },
-    {
-      "src": "src/pages/**/*.jsx",
+      "src": "package.json",
       "use": "@vercel/next"
     }
   ],
   "routes": [
     { "src": "/api/(.*)", "dest": "/api/$1" },
-    { "src": "/(.*)", "dest": "/src/pages/$1" }
+    { "src": "/(.*)", "dest": "/$1" }
   ],
   "env": {
     "TELEGRAM_BOT_TOKEN": "7654045113:AAEnQRFkj302E-S40YM8F49r4PHd-zvxqO4",
