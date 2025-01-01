@@ -1,1 +1,26 @@
+{
+  "name": "bl-novels",
+  "version": "1.0.0",
+  "description": "Telegram mini-app для чтения и публикации переводов корейских новелл.",
+  "main": "src/index.jsx",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "keywords": ["telegram", "novels", "korean", "translations", "mini-app"],
+  "author": "Ваше Имя",
+  "license": "MIT",
+  "dependencies": {
+    "next": "13.x",
+    "react": "18.x",
+    "react-dom": "18.x",
+    "telegram-web-app": "^1.0.0"
+  },
+  "devDependencies": {
+    "eslint": "8.x",
+    "eslint-config-next": "13.x"
+  }
+}
 
